@@ -39,7 +39,7 @@ async fn main() {
         .layer(cors);
     
     // 待ち受けipとポート指定用,127.0.0.1はlocalonly 0.0.0.0で外部からのアクセスを許可
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     // TCPポート解放用. awaitはFuture解決まで結果を返さない
     let listener = TcpListener::bind(addr).await.unwrap();
 
