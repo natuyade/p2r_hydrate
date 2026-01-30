@@ -1,0 +1,27 @@
+[package]
+name = "romanLink"
+version = "0.1.0"
+edition = "2024"
+
+[package.metadata.leptos]
+output-name = "romanLink"
+site = "target/site"
+site-pkg-dir = "pkg"
+site-addr = "0.0.0.0:3000"
+assets-dir = "assets"
+
+[dependencies]
+
+tokio = { version = "1", features = ["full"] }
+
+# axum routerで URLと処理(ハンドラ)を結ぶ.routing.getでurlを取得
+axum = "0.8.8"
+
+# cors設定用
+tower-http = { version = "0.6.8", features = ["cors"] }
+
+http = "1.4.0"
+
+leptos = { version = "0.8.15", features = ["csr","ssr"] }
+leptos_axum = "0.8.7"
+leptos_router = "0.8.11"
