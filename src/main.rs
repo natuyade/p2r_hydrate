@@ -30,6 +30,8 @@ async fn main() {
                             <head>
                                 <meta charset="utf-8" />
                                 <title>じゃれ本部門[P2R]</title>
+                                <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+                                <link rel="icon" href="images/favicon.png" type="image/png"/>
                                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                                 <meta name="robots" content="noindex, nofollow" />
                                 <link
@@ -40,8 +42,8 @@ async fn main() {
                                 />
                                 <script type="module">
                                     r#"
-                                    import init, { hydrate } from '/pkg/romanLink.js';
-                                    init('/pkg/p2r_hydrate.wasm').then(() => {
+                                    import init, { hydrate } from '/pkg/p2r_hydrate.js';
+                                    init({ module_or_path: '/pkg/p2r_hydrate.wasm' }).then(() => {
                                         console.log('WASM loaded, calling hydrate...');
                                         hydrate();
                                     });
