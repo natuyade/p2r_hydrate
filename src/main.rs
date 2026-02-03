@@ -1,58 +1,77 @@
-use axum::{Router, http::HeaderValue, routing::get};
-use std::net::SocketAddr;
-use tokio::net::TcpListener;
-use tower_http::cors::{Any, CorsLayer};
-use leptos::prelude::*;
-use leptos_axum::{LeptosRoutes, generate_route_list};
-
-// tokio Async Runtime(axumではasyncを使うので必須)
+#[cfg(feature = "ssr")]
 #[tokio::main]
-// サーバーの起動,待ち受け関数. ほかの処理で止まってはいけないのでasync
 async fn main() {
+    use leptos::config::get_configuration;
+    use leptos::prelude::*;
+    use leptos_axum::{generate_route_list, LeptosRoutes};
+    use tower_http::services::ServeDir;
+    use tower_http::cors::{Any, CorsLayer};
     
-    // get_comf(None)はどこかにあるmetadeta.leptosを探して適応
+    use p2r_hydrate::app::App;
+    
     let conf = get_configuration(Some("Cargo.toml")).unwrap();
+    let leptos_options = conf.leptos_options.clone();
     let routes = generate_route_list(App);
     
-    // corsの認証設定
+    // cors 認証設定
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
-        .allow_methods(Any)
-        .allow_headers(Any);
+                .allow_origin(Any)
+                .allow_methods(Any)
+                .allow_headers(Any);
     
-    // page.
-    let app = Router::new()
-        .route("/hello-world", get(hello_world))
-        // confはConfFileなので中にあるleptos_optionsを取り出し適応させる
-        .leptos_routes(&conf.leptos_options, routes, App)
-        // StaticFileStream+404err処理
-        .fallback(
-            // req ssr handler
-            leptos_axum::render_app_to_stream_with_context(
-                    || {  },
-                    // app route
-                    || { App },
-                )
-        )
+    let app = axum::Router::new()
+        .leptos_routes(&leptos_options, routes, {
+                    let _leptos_options = leptos_options.clone();
+                    move ||
+                    // index.html
+                    view! {
+                        <!doctype html>
+                        <html>
+                            <head>
+                                <meta charset="utf-8" />
+                                <title>じゃれ本部門[P2R]</title>
+                                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                                <meta name="robots" content="noindex, nofollow" />
+                                <link
+                                    data-trunk
+                                    rel="copy-dir"
+                                    href="assets"
+                                    data-target-path="assets"
+                                />
+                                <script type="module">
+                                    r#"
+                                    import init, { hydrate } from '/pkg/romanLink.js';
+                                    init('/pkg/p2r_hydrate.wasm').then(() => {
+                                        console.log('WASM loaded, calling hydrate...');
+                                        hydrate();
+                                    });
+                                    "#
+                                </script>
+                            </head>
+                                <body>
+                                    <App/>
+                                </body>
+                            </html>
+                                
+                    }
+                })
+        .fallback(leptos_axum::file_and_error_handler(|_| {
+            view! { <App/> }
+        }))
+        .nest_service("/pkg", ServeDir::new("target/site/pkg"))
+        .nest_service("/assets", ServeDir::new("/assets"))
         .with_state(conf.leptos_options)
-        // cors認証をlayerで挟む
+        // cors層を挟む
         .layer(cors);
-    
-    // 待ち受けipとポート指定用,127.0.0.1はlocalonly 0.0.0.0で外部からのアクセスを許可
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    // TCPポート解放用. awaitはFuture解決まで結果を返さない
-    let listener = TcpListener::bind(addr).await.unwrap();
 
-    axum::serve(listener, app.into_make_service()).await.unwrap();
+    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3000));
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+
+    axum::serve(listener, app.into_make_service())
+        .await
+        .unwrap();
 }
 
-async fn hello_world() -> &'static str {
-    "Hello, world!"
-}
-
-#[component]
-fn App() -> impl IntoView {
-    view! {
-        <h1 style="color: lime">"ハローワールド！"</h1>
-    }
+#[cfg(not(feature = "ssr"))]
+pub fn main() {
 }

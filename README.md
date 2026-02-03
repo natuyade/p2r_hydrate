@@ -1,3 +1,3 @@
-romanLink
+p2r_hydrate
 ================================
-#### Leptosとaxumを実際につなげる練習
+#### 実際にromanProjectをhydrateさせて構築
