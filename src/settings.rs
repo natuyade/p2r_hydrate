@@ -1,9 +1,8 @@
 use leptos::prelude::*;
 
-use wasm_bindgen::JsCast;
 use crate::app::SoundSE;
-use crate::sounds::{LoadSounds, SoundEffects};
 use crate::play_sound;
+use crate::soundload::SoundLoader;
 
 pub fn sounds_vlm() -> (ReadSignal<usize>, WriteSignal<usize>) {
     signal(0usize)
@@ -19,16 +18,12 @@ pub fn setting_menu() -> impl IntoView {
     let (tab_anim, set_tab_anim) = signal(false);
     // mute時にcurrent volumeを保存
     let (vlmcache, set_vlmcache) = signal(0usize);
-
-    let sound_ref = SoundEffects::new();
-    // 特定のsound取り出し
-    let cursoron_ref = sound_ref.cursoron;
+    // volumeの値を保存しplay時に適応させる
     let SoundSE { sevlm, set_sevlm } = use_context::<SoundSE>().unwrap();
-
+    
+    
+    
     view! {
-        // sounds listの読み込み
-        <LoadSounds sound_refs=sound_ref />
-
         <div class="settings-wrapper">
             <img src="images/setting.webp"
                 class="settings-icon"
@@ -81,6 +76,7 @@ pub fn setting_menu() -> impl IntoView {
                         on:input:target=move |ev| {
                             set_sevlm.set(ev.target().value().parse::<usize>().unwrap())
                         }
+                        // 中の値(dom上でだけ変わる値)≒value=""
                         prop:value=move || sevlm.get()
                     />
                     </div>
@@ -106,7 +102,7 @@ pub fn setting_menu() -> impl IntoView {
                             color: black;
                             padding: 2px;
                         "
-                        on:click=move |_| play_sound!{cursoron_ref, sevlm}
+                        //on:click=move|_|{}
                     >
                         "クリックでSE再生"
                     </button>

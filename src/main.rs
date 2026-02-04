@@ -32,6 +32,7 @@ async fn main() {
                                 <title>じゃれ本部門[P2R]</title>
                                 <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
                                 <link rel="icon" href="images/favicon.png" type="image/png"/>
+                                <link rel="apple-touch-icon" href="favicon.png"/>
                                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                                 <meta name="robots" content="noindex, nofollow" />
                                 <link

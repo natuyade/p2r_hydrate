@@ -61,6 +61,7 @@ pub fn global_style() -> &'static str {
         background-attachment: fixed;
         cursor: url('images/cursorpg.webp') 0 0, auto;
         user-select: none;
+        touch-action: manipulation;
     }
 
     a {
@@ -406,6 +407,9 @@ pub fn global_style() -> &'static str {
         animation-name: splash;
         animation-duration: 5s;
         animation-iteration-count: infinite;
+    }
+    .splash p {
+        text-align: center;
     }
 
     .schedule-box {

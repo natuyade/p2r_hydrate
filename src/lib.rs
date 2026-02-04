@@ -4,7 +4,7 @@ pub mod app;
 mod p2r_macros;
 
 // resource
-mod soundloader;
+mod soundload;
 
 // css
 mod globalcss;
@@ -12,9 +12,8 @@ mod globalcss;
 // 共通navigation
 mod p2rmenu;
 mod settings;
-mod sounds;
 
-// hompage
+// homepage
 mod homepage;
 mod nonesense;
 mod pre_date;
