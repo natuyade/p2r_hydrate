@@ -1,8 +1,7 @@
 use leptos::prelude::*;
 
 use crate::app::SoundSE;
-use crate::play_sound;
-use crate::soundload::SoundLoader;
+use crate::soundload;
 
 pub fn sounds_vlm() -> (ReadSignal<usize>, WriteSignal<usize>) {
     signal(0usize)
@@ -20,9 +19,7 @@ pub fn setting_menu() -> impl IntoView {
     let (vlmcache, set_vlmcache) = signal(0usize);
     // volumeの値を保存しplay時に適応させる
     let SoundSE { sevlm, set_sevlm } = use_context::<SoundSE>().unwrap();
-    
-    
-    
+
     view! {
         <div class="settings-wrapper">
             <img src="images/setting.webp"
@@ -102,7 +99,7 @@ pub fn setting_menu() -> impl IntoView {
                             color: black;
                             padding: 2px;
                         "
-                        //on:click=move|_|{}
+                        on:click=move |_| soundload::play("cursoron")
                     >
                         "クリックでSE再生"
                     </button>

@@ -1,22 +1,51 @@
 use leptos::prelude::*;
-use leptos::logging;
-use web_sys::{AudioBuffer, AudioBufferSourceNode, AudioContext, MediaElementAudioSourceNode, };
+use web_sys::{AudioBuffer, AudioBufferSourceNode, AudioContext };
 use wasm_bindgen::JsCast;
 use feature_extension_for_wasm_bindgen_futures::JsFuture;
 use std::collections::HashMap;
-use std::path;
 use std::cell::RefCell;
 use crate::app::SoundSE;
 
-// リソースをcloneしてleptosで扱う
-#[derive(Clone)]
+/* staticはグローバル変数でSync(定義したものもSyncである必要がある)
+ 　グローバル変数は同じプログラム内で値を共有したい場合に使用できる.
+   staticは複数スレッドから同時に触れられるがRefCellはSyncではないため複数スレッドからアクセスしてはいけない.
+   thread_local!は静的宣言をラップし,スレッドローカル化(スレッド毎に別の値を保存する[◎threadA: static(A),◎threadB: static(B)])
+   つまり,複数スレッドからアクセスされても値がスレッド同士で共有されるわけではないため!Syncでも安全に扱える
+   thread_local! + RefCellは!atomic(整数,bool等)staticな値をスレッド毎に分けて安全に扱う*/
+thread_local! {
+    // staticは不変だがRefCellで内部可変性を持たせることで可変に. RefCell::new(None)で初期化
+    static SOUND_LOADER: RefCell<Option<SoundLoader>> = const { RefCell::new(None) };
+}
+// asyncで,soundfileのロードを非同期で処理
+pub async fn init_sounds() {
+    {
+        let mut loader = SoundLoader::new();
+        loader.load("cardflip", "/sounds/cardflip.wav").await;
+        loader.load("cursoron", "/sounds/cursoron.wav").await;
+        // .with()はthread_local!変数にアクセスする(要クロージャ)ために必要(cellは&)
+        SOUND_LOADER.with(|cell| {
+            // *で実体を取り出しstatic(None)を(Some(loader(書き込み済みSoundLoader)))に書き換える
+            *cell.borrow_mut() = Some(loader);
+        });
+    }
+}
+// 再生関数
+pub fn play(name: &str) {
+    // with||アクセス
+    SOUND_LOADER.with(|cell| {
+        // Some(loader(書き込み済みSoundLoader)) .as_ref()で中身を参照できる<Option<&SoundLoader>> -> name一致で再生 
+        if let Some(loader) = cell.borrow().as_ref() {
+            loader.play(name);
+        }
+    });
+}
+
 pub struct SoundLoader {
     // ctx = Context entry point
     pub ctx: AudioContext,
     /* HashMapは入れたもの中からkeyが一致するものを探し,対応した値を持ってきます今回はそれをバッファーとして扱う
-       今回はサウンドファイル名('static strは"a.wav"等の静的文字列リテラル)をkeyとし,デコード済みのサウンドを格納する
-       RefCellを使うことで内部可変性を持たせられる */
-    pub buffers: RefCell<HashMap<&'static str, AudioBuffer>>,
+       今回はサウンドファイル名('static strは"a.wav"等の静的文字列リテラル)をkeyとし,デコード済みのサウンドを格納する*/
+    pub buffers: HashMap<&'static str, AudioBuffer>,
 }
 
 // implでloadとplayを追加
@@ -25,15 +54,14 @@ impl SoundLoader {
     pub fn new() -> Self {
         Self {
             ctx: AudioContext::new().unwrap(),
-            buffers: RefCell::new(HashMap::new()),
+            buffers: HashMap::new(),
         }
     }
     
     /*  app起動時に一度だけ呼び,
      　 初期化しAudioBufferをデコードしてキャッシュする 
-     　 &selfはこの関数がこの構造体自体を読むよ～.の宣言 */
-
-    pub async fn load(&self, name: &'static str, url: &str) {
+     　 &mut selfはこの関数がこの構造体自体を書き換えるよ.の宣言 */
+    pub async fn load(&mut self, name: &'static str, url: &str) {
         /* wasmで動くrustコードはブラウザの中で動いているためOSのfs,networkに直接アクセスできない
            (wasm自体がlocalfileに直接アクセスできないためfetchが必要)
            ネイティブrustの場合rust->OSに直接アクセスできる.
@@ -71,9 +99,8 @@ impl SoundLoader {
             ).unwrap()
         ).await.unwrap();
     
-        /* 受け取ったnameとデコードしたaudio_bufferをHashMapに追加,あとで呼び出せる
-           borrow_mut()で一時的に書き込み権限を借りる*/
-        self.buffers.borrow_mut().insert(name, audio_buffer.unchecked_into());
+        // 受け取ったnameとデコードしたaudio_bufferをHashMapに追加,あとで呼び出せる
+        self.buffers.insert(name, audio_buffer.unchecked_into());
     }
     /* HashMapに保存されたサウンド名を呼び出し(&selfで読み取り宣言)
        loadではname:&'static strでplayで&strなのは(今は違う)
@@ -82,11 +109,9 @@ impl SoundLoader {
        
        playでは関数の中でnameが役目を終わるのでstaticである必要がない*/
     pub fn play(&self, name: &str) {
-        // borrow()で読み取り権限を借りる
-        let buffers = self.buffers.borrow();
         /* HashMapから対応したnameのkeyを探し,値のAudioBufferを受け取る見つからなければエラーログ
            HashMapの返り値はOption型なのでSome()で取り出す*/
-        let Some(buffer) = buffers.get(name) else {
+        let Some(buffer) = self.buffers.get(name) else {
             leptos::logging::log!("Sound not found: {}", name);
             // returnは関数を即時終了させる.つまり指定されたファイルがなければ下の処理が必要ないのでreturn
             return;
