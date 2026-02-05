@@ -21,6 +21,11 @@ mod pre_date;
 // novel_list
 mod novel_list;
 
+// novels
+mod novels;
+mod page_counter;
+mod text_data;
+
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn hydrate() {

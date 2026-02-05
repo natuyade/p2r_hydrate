@@ -13,6 +13,12 @@ use crate::homepage::Homepage;
 
 use crate::novel_list::NovelPageList;
 
+use crate::novels::novel_1::NovelPage1;
+use crate::novels::novel_2::NovelPage2;
+use crate::novels::novel_3::NovelPage3;
+use crate::novels::enter_code::SecretCode;
+use crate::novels::test_1::Test1;
+
 #[derive(Clone)]
 pub struct SoundSE {
     pub sevlm: ReadSignal<usize>,
@@ -46,10 +52,11 @@ pub fn App() -> impl IntoView {
             <Routes fallback = || "Page not found">
                 <Route path=path!("/") view=Homepage/>
                 <Route path=path!("/list") view=NovelPageList/>
-                //<Route path=path!("/novel_1") view=NovelPage1/>
-                //<Route path=path!("/novel_2") view=NovelPage2/>
-                //<Route path=path!("/novel_3") view=NovelPage3/>
-                //<Route path=path!("/secret") view=SecretCode/>
+                <Route path=path!("/novel_1") view=NovelPage1/>
+                <Route path=path!("/novel_2") view=NovelPage2/>
+                <Route path=path!("/novel_3") view=NovelPage3/>
+                <Route path=path!("/secret") view=SecretCode/>
+                <Route path=path!("/test") view=Test1/>
             </Routes>
         </Router>
     }

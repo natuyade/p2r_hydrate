@@ -20,7 +20,7 @@ thread_local! {
 pub async fn init_sounds() {
     {
         let mut loader = SoundLoader::new();
-        loader.load("cardflip", "/sounds/cardflip.wav").await;
+        loader.load("pageflip", "/sounds/cardflip.wav").await;
         loader.load("cursoron", "/sounds/cursoron.wav").await;
         // .with()はthread_local!変数にアクセスする(要クロージャ)ために必要(cellは&)
         SOUND_LOADER.with(|cell| {
