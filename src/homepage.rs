@@ -33,6 +33,21 @@ pub fn homepage() -> impl IntoView{
                     </a>
                 </div>
             </div>
+            <p class="credit">"© 2025-2026 natuyade."</p>
+            <div class="sns">
+                <a 
+                    style="background-image: url('images/github.webp');"
+                    href="https://github.com/natuyade"
+                />
+                <a 
+                    style="background-image: url('images/twitter.webp');"
+                    href="https://twitter.com/748da4a5"
+                />
+                <a 
+                    style="background-image: url('images/duolingo.webp');"
+                    href="https://www.duolingo.com/profile/natuyade"
+                />
+            </div>
         </div>
     }
 }

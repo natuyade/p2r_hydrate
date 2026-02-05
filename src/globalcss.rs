@@ -437,7 +437,31 @@ pub fn global_style() -> &'static str {
     .schedule-img:hover {
         opacity: 0.8;
     }
-
+    
+    .credit {
+        position: absolute;
+        top: 770px;
+        font-family: 'Unifont';
+        font-size: 16px;
+        color: white;
+    }
+    .sns {
+        position: absolute;
+        top: 720px;
+        font-family: 'Unifont';
+        font-size: 16px;
+        color: white;
+    }
+    .sns a {
+        display: inline-block;
+        background-size: cover;
+        width: 48px;
+        height: 48px;
+    }
+    .sns a:hover {
+        opacity: 0.8;
+    }
+    
     /* novellist */
     .text-box-pos {
         /* Flexbox を有効化 */

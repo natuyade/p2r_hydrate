@@ -18,6 +18,9 @@ mod homepage;
 mod nonesense;
 mod pre_date;
 
+// novel_list
+mod novel_list;
+
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn hydrate() {

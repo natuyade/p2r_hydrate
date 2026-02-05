@@ -1,13 +1,17 @@
 use leptos::prelude::*;
 use leptos_router::components::{Router, Routes, Route};
 use leptos_router::path;
+
+use crate::soundload;
+
 use crate::p2rmenu::p2r_menu;
+use crate::settings::SettingMenu;
+use crate::settings::sounds_vlm;
 
 use crate::globalcss::global_style;
 use crate::homepage::Homepage;
-use crate::settings::SettingMenu;
-use crate::settings::sounds_vlm;
-use crate::soundload;
+
+use crate::novel_list::NovelPageList;
 
 #[derive(Clone)]
 pub struct SoundSE {
@@ -41,7 +45,11 @@ pub fn App() -> impl IntoView {
         <Router>
             <Routes fallback = || "Page not found">
                 <Route path=path!("/") view=Homepage/>
-                <Route path=path!("/homepage") view=Homepage/>
+                <Route path=path!("/list") view=NovelPageList/>
+                //<Route path=path!("/novel_1") view=NovelPage1/>
+                //<Route path=path!("/novel_2") view=NovelPage2/>
+                //<Route path=path!("/novel_3") view=NovelPage3/>
+                //<Route path=path!("/secret") view=SecretCode/>
             </Routes>
         </Router>
     }
