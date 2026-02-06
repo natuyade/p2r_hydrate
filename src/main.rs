@@ -6,6 +6,7 @@ async fn main() {
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use tower_http::services::ServeDir;
     use tower_http::cors::{Any, CorsLayer};
+    use http::HeaderValue;
     
     use p2r_hydrate::app::App;
     
@@ -15,7 +16,7 @@ async fn main() {
     
     // cors 認証設定
     let cors = CorsLayer::new()
-                .allow_origin(Any)
+                .allow_origin("https://p2rush.jp".parse::<HeaderValue>().unwrap())
                 .allow_methods(Any)
                 .allow_headers(Any);
     

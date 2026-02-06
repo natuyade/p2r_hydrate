@@ -46,7 +46,7 @@ pub fn novel_page_3() -> impl IntoView {
         <div class="novelbg">
             <div class="inner-bg">
                 <div class="inner">
-                    <h1>"『平凡な生活』"</h1>
+                    <h1>"『ペンギンgaku園』"</h1>
                     <Show 
                         when= move || NovelImg::Novel3.nimgpath(count.get()).is_some()
                         fallback=|| ()

@@ -380,10 +380,11 @@ pub fn global_style() -> &'static str {
         z-index: 9996;
     }
 
-    /* hoverで触れている時だけ可視化 */
-    .button:hover {
-        background-color: rgba(0,0,0,0.1);
-        color: rgba(72, 72, 72, 0.8);
+    @media (hover) {
+        .button:hover {
+            background-color: rgba(0,0,0,0.1);
+            color: rgba(72, 72, 72, 0.8);
+        }
     }
 
     .left {
@@ -512,7 +513,7 @@ pub fn global_style() -> &'static str {
         margin: auto;
         width: 100vw;
         max-width: 1280px;
-        height: 100vh;
+        height: 100%;
     }
     .imgwindow-bg2 {
         width: 100%;
