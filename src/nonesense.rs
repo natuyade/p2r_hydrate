@@ -7,12 +7,12 @@ pub const NONS: [&str; 25] = [
     "PASS",// sho
     "IXGY",// sho
     "すしまん開店!",// sho
-    "池田大作ランド開園!",// sho
+    "池大ランド開園!",//"池田大作ランド開園!",// sho
     "https://leptos.dev/",// sho
     "https://rust-lang.org/",// sho
     "なつおはゲームが上手い",// sho
-    "GAY",// sho
-    "プレイオス♂",// sho
+    "HEY",//"GAY",// sho
+    "Real man uses a shotgun",//"プレイオス♂",// sho
     "Annihalation",
     "この辺にぃ、旨いラーメン屋の屋台来てるらしいっすよ。",// sho
     "Давай!Давай!Давай!",// sho

@@ -512,7 +512,7 @@ pub fn global_style() -> &'static str {
         margin: auto;
         width: 100vw;
         max-width: 1280px;
-        height: 100vh;
+        height: 100%;
     }
     .imgwindow-bg2 {
         width: 100%;
