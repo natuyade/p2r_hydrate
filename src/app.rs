@@ -40,7 +40,15 @@ pub fn App() -> impl IntoView {
     view! {
         /* Suspenseは中のfutureが完了するまで代わりのUIを表示できる
            直接futureを参照してるわけじゃない(Resource,LocalResourceのfutureのみ)*/
-        <Suspense attr:style="position:fixed" fallback=|| view! { <p>"Loading Sound Files..."</p> }>
+        <Suspense attr:style="position:fixed" fallback=|| 
+            view! {
+                <div class="loading">
+                    <img class="peng0" src="images/loadpeng.webp" />
+                    <img class="peng1" src="images/loadpeng.webp" />
+                    <img class="peng2" src="images/loadpeng.webp" />
+                </div>
+            }
+        >
         /* soundfileを事前load(キャッシュに入れる) .map()はOptionがSome()の場合に変数の中にコードが入力されるメソッド
            (やってることはif letと同じ) */
             {move || sounds_ready.get()/*.map(|_| view!{<p>"Loaded!"</p>})}*/}

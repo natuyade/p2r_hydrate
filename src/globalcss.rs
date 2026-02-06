@@ -1,3 +1,10 @@
+/*z-index
+ * 10000[loading,imgwindow-bg]
+ * 9999[menu-icon,settings-icon]
+ * 9998[settings-wrapper]
+ * 9997[nav]
+ * 9996[button]
+ */
 pub fn global_style() -> &'static str {
     "
     @font-face {
@@ -50,6 +57,42 @@ pub fn global_style() -> &'static str {
             scale: 0%;
         }
     }
+    @keyframes loading-penguin {
+        0%{
+            transform: rotateY(0);
+        }
+        50%{
+            transform: rotateY(180deg);
+        }
+        100%{
+            transform: rotateY(0);
+        }
+    }
+    
+    .loading {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color:  rgba(0,0,0,0.2);
+        z-index: 10000;
+        display: flex;
+            justify-content: center;
+    }
+    .loading img {
+        position: relative;
+        margin: auto 12px;
+        width: 64px;
+        height: 64px;
+    }
+    .peng0 {
+        animation: loading-penguin cubic-bezier(.65,.05,.36,1) 2.4s infinite 0.8s;
+    }
+    .peng1 {
+        animation: loading-penguin cubic-bezier(.65,.05,.36,1) 2.4s infinite;
+    }
+    .peng2 {
+        animation: loading-penguin cubic-bezier(.65,.05,.36,1) 2.4s infinite 0.4s;
+    }
 
     html, body {
         margin: 0;
@@ -87,8 +130,7 @@ pub fn global_style() -> &'static str {
         opacity: 0.8;
     }
     .menu-anim {
-        animation-name: toggle-menu;
-        animation-duration: 0.2s;
+        animation: toggle-menu 0.2s;
     }
 
     nav {
@@ -128,16 +170,13 @@ pub fn global_style() -> &'static str {
         text-decoration: none;
     }
     .li-anim1 {
-        animation-name: toggle-menu-tab;
-        animation-duration: 0.4s;
+        animation: toggle-menu-tab 0.4s;
     }
     .li-anim2 {
-        animation-name: toggle-menu-tab;
-        animation-duration: 0.6s;
+        animation: toggle-menu-tab 0.6s;
     }
     .li-anim3 {
-        animation-name: toggle-menu-tab;
-        animation-duration: 0.8s;
+        animation: toggle-menu-tab 0.8s;
     }
 
     .settings-wrapper {
@@ -180,8 +219,7 @@ pub fn global_style() -> &'static str {
         opacity: 0.8;
     }
     .setting-anim {
-        animation-name: toggle-setting;
-        animation-duration: 0.2s;
+        animation: toggle-setting 0.2s;
     }
     .settings {
         position: absolute;
@@ -204,12 +242,10 @@ pub fn global_style() -> &'static str {
     }
 
     .settings-tab-anim-open {
-        animation-name: settingstab-anim-open;
-        animation-duration: 0.15s;
+        animation: settingstab-anim-open 0.15s;
     }
     .settings-tab-anim-close {
-        animation-name: settingstab-anim-close;
-        animation-duration: 0.15s;
+        animation: settingstab-anim-close 0.15s;
     }
 
     .settings-text {
@@ -341,6 +377,7 @@ pub fn global_style() -> &'static str {
         cursor: pointer;
         transition: background-color 0.8s, color 0.8s;
         cursor: url('images/cursorpg.webp') 0 0, pointer;
+        z-index: 9996;
     }
 
     /* hoverで触れている時だけ可視化 */
@@ -383,6 +420,28 @@ pub fn global_style() -> &'static str {
             scale: 90%
         }
     }
+    @keyframes imgwindow-open {
+        0%{
+            opacity: 0;
+        }
+        100%{
+            opacity: 1;
+        }
+    }
+    @keyframes imgwindow-close {
+        0%{
+            opacity: 1;
+        }
+        100%{
+            opacity: 0;
+        }
+    }
+    .imgwindow-open {
+        animation: imgwindow-open 0.3s;
+    }
+    .imgwindow-close {
+        animation: imgwindow-close 0.3s;
+    }
 
     .schedule-wrapper {
         display: flex;
@@ -404,9 +463,7 @@ pub fn global_style() -> &'static str {
         font-size: 32px;
         color: Yellow;
         text-shadow: 0 0 12px #838939;
-        animation-name: splash;
-        animation-duration: 5s;
-        animation-iteration-count: infinite;
+        animation: splash 5s infinite;
     }
     .splash p {
         text-align: center;
@@ -436,6 +493,54 @@ pub fn global_style() -> &'static str {
     }
     .schedule-img:hover {
         opacity: 0.8;
+    }
+    
+    .imgwindow-wrapper {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+    }
+    .imgwindow-bg {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+    }
+    .imgwindow-container {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        width: 100vw;
+        max-width: 1280px;
+        height: 100vh;
+    }
+    .imgwindow-bg2 {
+        width: 100%;
+        height: 100%;
+    }
+    .imgwindow {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    .imgwindow-closebtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 64px;
+        width: 64px;
+    }
+    .imgwindow-closebtn:hover {
+        opacity: 0.8; 
+    }
+    .imgwindow-img {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+        width: 100%;
+        max-width: 1280px;
+        max-height: 720px;
     }
     
     .credit {
